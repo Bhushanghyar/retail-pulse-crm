@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block page_title %}Order Management & Sales{% endblock %}
+{% block content %}
+
+<div class="animate-fade">
+    <div class="add-form" style="background: white; padding: 25px; border-radius: 16px; border: 1px solid #E2E8F0; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: #0F172A; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-cart-plus" style="color: #2563EB;"></i> Create New Customer Order
+        </h3>
+        <form method="POST" style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <select name="customer_id" required style="flex: 1.5; min-width: 200px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px; background: white;">
+                <option value="" disabled selected>-- Select Customer --</option>
+                {% for c in customers %}
+                <option value="{{ c.id }}">{{ c.name }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="product_id" required style="flex: 1.5; min-width: 200px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px; background: white;">
+                <option value="" disabled selected>-- Select Product --</option>
+                {% for p in products %}
+                <option value="{{ p.id }}">{{ p.name }} (₹{{ "{:,.0f}".format(p.price) }})</option>
+                {% endfor %}
+            </select>
+
+            <input type="number" name="quantity" placeholder="Qty" min="1" required style="flex: 0.5; min-width: 80px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            
+            <button type="submit" style="background: #2563EB; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                Create Order
+            </button>
+        </form>
+    </div>
+
+    <div style="background: white; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0;">
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Customer Name</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Product</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">Qty</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Total Price</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Date</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; text-align: right;">Invoice</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for o in orders %}
+                <tr style="border-bottom: 1px solid #F1F5F9; transition: 0.2s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 16px; font-weight: 600; color: #1E293B;">{{ o.name }}</td>
+                    <td style="padding: 16px; color: #475569;">{{ o.p_name }}</td>
+                    <td style="padding: 16px; text-align: center; color: #1E293B; font-weight: 500;">{{ o.quantity }}</td>
+                    <td style="padding: 16px; color: #10B981; font-weight: 700;">₹ {{ "{:,.2f}".format(o.total_price) }}</td>
+                    <td style="padding: 16px; color: #94A3B8; font-size: 0.85rem;">{{ o.date }}</td>
+                    <td style="padding: 16px; text-align: right;">
+                        <a href="/download_invoice/{{ o.id }}" style="background: #F1F5F9; color: #2563EB; text-decoration: none; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; transition: 0.2s;" onmouseover="this.style.background='#E0E7FF'">
+                            <i class="fas fa-file-invoice"></i> Bill
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

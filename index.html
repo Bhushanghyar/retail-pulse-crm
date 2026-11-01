@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CRM Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="navbar">
+    <a href="/">Home</a>
+    <a href="/customers">Customers</a>
+    <a href="/products">Products</a>
+    <a href="/orders">Orders</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/logout" style="color: #ff4d4d; font-weight: bold;">Logout ({{ session['username'] }})</a>
+</div>
+<div class="container">
+
+<h1>Retail Shop CRM System</h1>
+
+<h3>Welcome to CRM Dashboard</h3>
+
+<p style="text-align:center;">Manage Customers, Products, Orders and View Analytics Easily.</p>
+
+</div>
+
+</body>
+</html>

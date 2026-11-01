@@ -1,0 +1,165 @@
+{% extends "layout.html" %}
+{% block page_title %}Business Analytics & Profit Overview{% endblock %}
+{% block content %}
+
+<style>
+    /* Premium Stat Cards Styling */
+    .stat-card {
+        background: white; 
+        padding: 25px; 
+        border-radius: 16px; 
+        position: relative;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); 
+        border-left: 6px solid #DDD;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .card-icon { 
+        position: absolute; 
+        top: 20px; 
+        right: 20px; 
+        font-size: 1.5rem; 
+        opacity: 0.2; 
+    }
+    .trend { 
+        font-size: 0.75rem; 
+        font-weight: 700; 
+        margin-top: 10px; 
+        display: block; 
+    }
+    
+    .blue-border { border-left-color: #2563EB; }
+    .purple-border { border-left-color: #7C3AED; }
+    .orange-border { border-left-color: #F59E0B; }
+    .green-border { border-left-color: #10B981; }
+
+    /* Inventory Warning Banner */
+    .warning-banner {
+        background: #FFFBEB; 
+        border-left: 5px solid #F59E0B; 
+        padding: 18px;
+        border-radius: 12px; 
+        margin-bottom: 30px; 
+        display: flex; 
+        align-items: center;
+        justify-content: space-between;
+    }
+</style>
+
+<div class="animate-fade">
+    {% if low_stock %}
+    <div class="warning-banner" id="stockAlert">
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <i class="fas fa-exclamation-triangle" style="color: #F59E0B; font-size: 1.2rem;"></i>
+            <div>
+                <p style="margin: 0; font-weight: 700; color: #92400E;">Inventory Attention Required</p>
+                <p style="margin: 0; font-size: 0.85rem; color: #B45309;">
+                    The following items are running low: 
+                    {% for item in low_stock %} 
+                        <b>{{ item[0] }}</b> ({{ item[1] }} left){% if not loop.last %}, {% endif %} 
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+        <i class="fas fa-times" style="cursor: pointer; color: #B45309;" onclick="document.getElementById('stockAlert').style.display='none'"></i>
+    </div>
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
+        
+        <div class="stat-card blue-border">
+            <i class="fas fa-users card-icon"></i>
+            <h3>Total Customers</h3>
+            <p style="font-size: 2.2rem; font-weight: 800; margin: 10px 0 0 0;" class="counter" data-target="{{ customers }}">0</p>
+            <span class="trend" style="color: #2563EB;">Active Client Base</span>
+        </div>
+
+        <div class="stat-card orange-border">
+            <i class="fas fa-shopping-bag card-icon"></i>
+            <h3>Orders Completed</h3>
+            <p style="font-size: 2.2rem; font-weight: 800; margin: 10px 0 0 0;" class="counter" data-target="{{ orders }}">0</p>
+            <span class="trend" style="color: #F59E0B;">Sales Volume</span>
+        </div>
+
+        <div class="stat-card purple-border">
+            <i class="fas fa-indian-rupee-sign card-icon"></i>
+            <h3>Total Revenue</h3>
+            <p style="font-size: 2.2rem; font-weight: 800; margin: 10px 0 0 0;">₹ <span class="counter" data-target="{{ revenue }}">0</span></p>
+            <span class="trend" style="color: #7C3AED;">Gross Income</span>
+        </div>
+
+        <div class="stat-card green-border">
+            <i class="fas fa-hand-holding-dollar card-icon"></i>
+            <h3>Net Profit</h3>
+            <p style="font-size: 2.2rem; font-weight: 800; margin: 10px 0 0 0;">₹ <span class="counter" data-target="{{ profit }}">0</span></p>
+            <span class="trend" style="color: #10B981;">
+                Margin: {{ (profit/revenue*100)|round(1) if revenue > 0 else 0 }}%
+            </span>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Number Counting Animation Logic
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText.replace(/,/g, '');
+            const speed = 100; 
+            const inc = target / speed;
+
+            if (count < target) {
+                counter.innerText = Math.ceil(count + inc);
+                setTimeout(updateCount, 15);
+            } else {
+                counter.innerText = target.toLocaleString();
+            }
+        };
+        updateCount();
+    });
+</script>
+
+{% endblock %}  
+<div style="margin-top: 40px; display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+    
+    <div style="background: white; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <div style="padding: 20px; border-bottom: 1px solid #F1F5F9; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-trophy" style="color: #F59E0B;"></i>
+            <h3 style="margin: 0; font-size: 1.1rem; color: #0F172A;">Top Performing Staff</h3>
+        </div>
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #F8FAFC; text-align: left;">
+                    <th style="padding: 15px; font-size: 0.75rem; color: #64748B; text-transform: uppercase;">Staff Name</th>
+                    <th style="padding: 15px; font-size: 0.75rem; color: #64748B; text-transform: uppercase; text-align: center;">Leads Handled</th>
+                    <th style="padding: 15px; font-size: 0.75rem; color: #64748B; text-transform: uppercase; text-align: right;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for staff in staff_stats %}
+                <tr style="border-top: 1px solid #F1F5F9; transition: 0.2s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 15px; font-weight: 600; color: #1E293B;">{{ staff.assigned_to }}</td>
+                    <td style="padding: 15px; text-align: center; font-weight: 700; color: #2563EB;">{{ staff.lead_count }}</td>
+                    <td style="padding: 15px; text-align: right;">
+                        <span style="background: #DCFCE7; color: #15803D; padding: 4px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;">Active</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); color: white; padding: 30px; border-radius: 16px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);">
+        <h4 style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-lightbulb"></i> Business Insights
+        </h4>
+        <p style="font-size: 0.9rem; line-height: 1.6; opacity: 0.9; margin: 0;">
+            Reward your top staff to keep them motivated! The more leads your team handles, the more brass lights your shop will move.
+        </p>
+    </div>
+</div>

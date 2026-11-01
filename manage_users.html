@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block page_title %}Staff Management{% endblock %}
+{% block content %}
+
+<div class="animate-fade">
+    <div class="add-form" style="background: white; padding: 25px; border-radius: 16px; border: 1px solid #E2E8F0; margin-bottom: 30px;">
+        <h3 style="margin-bottom: 20px;"><i class="fas fa-user-plus" style="color: #2563EB;"></i> Register New Staff Member</h3>
+        <form method="POST" style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <input type="text" name="username" placeholder="Employee Name" required style="flex: 1; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <input type="password" name="password" placeholder="Set Password" required style="flex: 1; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <select name="role" style="padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px; background: white;">
+                <option value="Employee">Employee (Sales)</option>
+                <option value="Manager">Manager</option>
+                <option value="Admin">Admin</option>
+            </select>
+            <button type="submit" style="background: #2563EB; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer;">Create Account</button>
+        </form>
+    </div>
+
+    <div style="background: white; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #F8FAFC; text-align: left;">
+                    <th style="padding: 16px; color: #64748B;">Username</th>
+                    <th style="padding: 16px; color: #64748B;">Role</th>
+                    <th style="padding: 16px; color: #64748B; text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr style="border-top: 1px solid #F1F5F9;">
+                    <td style="padding: 16px; font-weight: 600;">{{ user.username }}</td>
+                    <td style="padding: 16px;">
+                        <span style="background: #E0E7FF; color: #4338CA; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem;">{{ user.role }}</span>
+                    </td>
+                    <td style="padding: 16px; text-align: right;">
+                        <a href="/delete/users/{{ user.id }}" style="color: #EF4444; text-decoration: none;"><i class="far fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

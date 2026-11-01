@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block page_title %}Lead & Follow-up Tracking{% endblock %}
+{% block content %}
+
+<div class="animate-fade">
+    <div class="add-form" style="background: white; padding: 25px; border-radius: 16px; border: 1px solid #E2E8F0; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: #0F172A; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-edit" style="color: #2563EB;"></i> Log New Business Lead
+        </h3>
+        <form method="POST" style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <input type="text" name="name" placeholder="Potential Customer Name" required style="flex: 1; min-width: 200px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <input type="text" name="contact" placeholder="Contact Info (Phone/Email)" required style="flex: 1; min-width: 150px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <input type="text" name="notes" placeholder="Notes (e.g., Interested in brass lights)" required style="flex: 2; min-width: 250px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <button type="submit" style="background: #2563EB; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer;">Log Lead</button>
+        </form>
+    </div>
+
+    <div style="background: white; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0;">
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Prospect Name</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Contact Info</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Requirement Details</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Assigned To</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for l in leads %}
+                <tr style="border-bottom: 1px solid #F1F5F9; transition: 0.2s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 16px; font-weight: 600; color: #1E293B;">{{ l[1] }}</td>
+                    <td style="padding: 16px; color: #475569;">{{ l[2] }}</td>
+                    <td style="padding: 16px; color: #64748B; font-size: 0.9rem;">{{ l[3] }}</td>
+                    <td style="padding: 16px;">
+                        <span style="background: #F1F5F9; color: #475569; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
+                            <i class="fas fa-user-tie" style="margin-right: 5px; font-size: 0.7rem;"></i>{{ l[4] }}
+                        </span>
+                    </td>
+                    <td style="padding: 16px;">
+                        <span style="background: #FEF3C7; color: #92400E; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">
+                            {{ l[5] }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

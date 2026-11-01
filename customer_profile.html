@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block page_title %}Customer Insight Profile{% endblock %}
+{% block content %}
+
+<div class="animate-fade">
+    <div style="background: white; padding: 30px; border-radius: 16px; border: 1px solid #E2E8F0; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 25px;">
+        <div style="width: 80px; height: 80px; background: #EEF2FF; color: #4338CA; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+            <i class="fas fa-user-tie"></i>
+        </div>
+        <div>
+            <h1 style="margin: 0; color: #0F172A; font-size: 1.8rem;">{{ customer.name }}</h1>
+            <p style="color: #64748B; margin: 5px 0 0 0; font-size: 1rem;">
+                <i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> {{ customer.address }} | 
+                <i class="fas fa-envelope" style="margin-left: 10px; margin-right: 5px;"></i> {{ customer.email }} | 
+                <i class="fas fa-phone" style="margin-left: 10px; margin-right: 5px;"></i> {{ customer.phone }}
+            </p>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start;">
+        
+        <div style="display: flex; flex-direction: column; gap: 30px;">
+            <div class="add-form" style="background: white; padding: 25px; border-radius: 16px; border: 1px solid #E2E8F0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <h3 style="margin-bottom: 20px; color: #0F172A;"><i class="fas fa-phone-volume" style="color: #2563EB; margin-right: 10px;"></i> Log Interaction</h3>
+                <form action="/add_interaction/{{ customer.id }}" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                    <select name="type" style="padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px; background: white;">
+                        <option>Call</option>
+                        <option>In-Person Visit</option>
+                        <option>Service Complaint</option>
+                        <option>Follow-up</option>
+                    </select>
+                    <input type="text" name="notes" placeholder="What was discussed?" required style="padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+                    <button type="submit" style="background: #2563EB; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer;">Log Event</button>
+                </form>
+            </div>
+
+            <div style="background: white; padding: 25px; border-radius: 16px; border: 1px solid #E2E8F0;">
+                <h4 style="margin-bottom: 20px; color: #0F172A;">Interaction Timeline</h4>
+                <div style="border-left: 2px solid #E2E8F0; padding-left: 20px; margin-left: 10px;">
+                    {% for i in interactions %}
+                    <div style="position: relative; margin-bottom: 25px;">
+                        <div style="position: absolute; left: -27px; top: 0; width: 12px; height: 12px; background: #2563EB; border-radius: 50%; border: 3px solid white;"></div>
+                        <small style="color: #94A3B8; font-weight: 600;">{{ i.date }}</small>
+                        <p style="margin: 5px 0 0 0; color: #1E293B; font-weight: 700;">{{ i.type }}</p>
+                        <p style="margin: 2px 0 0 0; color: #64748B; font-size: 0.9rem;">{{ i.notes }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="padding: 20px; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-shopping-bag" style="color: #2563EB;"></i>
+                <h3 style="margin: 0; font-size: 1.1rem; color: #0F172A;">Purchase History</h3>
+            </div>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="text-align: left; background: #F8FAFC;">
+                        <th style="padding: 15px; font-size: 0.75rem; color: #64748B; text-transform: uppercase;">Date</th>
+                        <th style="padding: 15px; font-size: 0.75rem; color: #64748B; text-transform: uppercase;">Product</th>
+                        <th style="padding: 15px; font-size: 0.75rem; color: #64748B; text-transform: uppercase; text-align: right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in history %}
+                    <tr style="border-top: 1px solid #F1F5F9;">
+                        <td style="padding: 15px; font-size: 0.85rem; color: #94A3B8;">{{ h.date }}</td>
+                        <td style="padding: 15px; font-weight: 600; color: #1E293B;">{{ h.p_name }}</td>
+                        <td style="padding: 15px; text-align: right; color: #10B981; font-weight: 700;">₹ {{ "{:,.2f}".format(h.total_price) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

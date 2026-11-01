@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhushan Enterprises - CRM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --sidebar-width: 260px; --navy: #0F172A; --primary: #2563EB; }
+        * { box-sizing: border-box; }
+        body { display: flex !important; margin: 0 !important; background: #F8FAFC; font-family: 'Inter', sans-serif; min-height: 100vh; }
+        
+        .sidebar {
+            width: var(--sidebar-width) !important; background: var(--navy) !important; color: white !important;
+            position: fixed !important; height: 100vh !important; left: 0; top: 0; padding: 25px; z-index: 1000;
+            display: flex; flex-direction: column;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width) !important; width: calc(100% - var(--sidebar-width)) !important;
+            min-height: 100vh; display: flex; flex-direction: column; flex: 1;
+        }
+
+        .top-bar { 
+            background: white; padding: 15px 40px; display: flex; 
+            justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid #E2E8F0; width: 100%;
+        }
+
+        .sidebar-brand { font-size: 1.5rem; font-weight: 800; padding-bottom: 40px; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; }
+        .sidebar-nav { flex-grow: 1; list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav li { margin-bottom: 10px; }
+        .sidebar-nav a { 
+            color: #94A3B8; text-decoration: none; padding: 12px 16px; border-radius: 12px; 
+            display: flex; align-items: center; gap: 12px; transition: 0.3s; font-size: 0.95rem;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(37, 99, 235, 0.15); color: var(--primary); font-weight: 600; }
+        .avatar { width: 35px; height: 35px; background: var(--primary); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        /* Hide sidebar on login page */
+        {% if request.endpoint == 'login' %}
+        .sidebar, .top-bar { display: none !important; }
+        .main-content { margin-left: 0 !important; width: 100% !important; }
+        {% endif %}
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="{{ url_for('dashboard') }}" class="sidebar-brand">📈 Retail Pulse</a>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}"><i class="fas fa-th-large"></i> Dashboard</a></li>
+            <li><a href="{{ url_for('customers') }}" class="{% if request.endpoint == 'customers' %}active{% endif %}"><i class="fas fa-users"></i> Customers</a></li>
+            <li><a href="{{ url_for('leads') }}" class="{% if request.endpoint == 'leads' %}active{% endif %}"><i class="fas fa-bullseye"></i> Leads</a></li>
+            <li><a href="{{ url_for('products') }}" class="{% if request.endpoint == 'products' %}active{% endif %}"><i class="fas fa-boxes"></i> Inventory</a></li>
+            <li><a href="{{ url_for('orders') }}" class="{% if request.endpoint == 'orders' %}active{% endif %}"><i class="fas fa-shopping-cart"></i> Sales</a></li>
+            <li><a href="{{ url_for('reports') }}" class="{% if request.endpoint == 'reports' %}active{% endif %}"><i class="fas fa-chart-line"></i> Reports</a></li>
+            
+            {% if session['role'] == 'Admin' %}
+            <li>
+                <a href="{{ url_for('manage_users') }}" class="{% if request.endpoint == 'manage_users' %}active{% endif %}">
+                    <i class="fas fa-users-cog"></i> Manage Staff
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+        <div style="border-top: 1px solid #1E293B; padding-top: 20px;">
+            {% if session.get('username') %}
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="avatar">{{ session.get('username')[0]|upper }}</div>
+                <div>
+                    <p style="font-size: 0.85rem; font-weight: 600; margin: 0; color: white;">{{ session.get('username') }}</p>
+                    <a href="{{ url_for('logout') }}" style="font-size: 0.75rem; color: #EF4444; text-decoration: none; font-weight: bold;">Logout</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+    <main class="main-content">
+        <header class="top-bar">
+            <h2 style="font-size: 1.2rem; margin: 0; font-weight: 700;">{% block page_title %}{% endblock %}</h2>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                {% if session.get('username') %}
+                <span style="font-size: 0.85rem; color: #64748B;">Welcome, <b>{{ session.get('username') }}</b></span>
+                <div class="avatar" style="width: 30px; height: 30px; font-size: 0.7rem;">{{ session.get('username')[0]|upper }}</div>
+                {% endif %}
+            </div>
+        </header>
+        <div style="padding: 40px;">{% block content %}{% endblock %}</div>
+    </main>
+</body>
+</html>

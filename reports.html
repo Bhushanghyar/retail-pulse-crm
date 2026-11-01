@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block page_title %}Business Analytics Reports{% endblock %}
+{% block content %}
+
+<div class="animate-fade">
+    <div style="background: white; padding: 30px; border-radius: 16px; border: 1px solid #E2E8F0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <div id="chart" class="chart"></div>
+    </div>
+
+    <div style="margin-top: 30px; background: white; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden;">
+        <div style="padding: 20px; background: #F8FAFC; border-bottom: 1px solid #E2E8F0;">
+            <h3 style="margin: 0; font-size: 1.1rem;"><i class="fas fa-table"></i> Monthly Breakdown</h3>
+        </div>
+        <div id="table-container">
+            <p style="padding: 20px; color: #64748B;">Data-driven insights for your lighting business.</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+    var graphs = {{ graphJSON | safe }};
+    Plotly.plot('chart', graphs, {});
+</script>
+
+{% endblock %}

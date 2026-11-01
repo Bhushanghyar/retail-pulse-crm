@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% block page_title %}Product Inventory & Expense Tracking{% endblock %}
+{% block content %}
+
+<div class="animate-fade">
+    <div class="add-form" style="background: white; padding: 25px; border-radius: 16px; border: 1px solid #E2E8F0; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: #0F172A; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-file-invoice-dollar" style="color: #2563EB;"></i> Add New Inventory Shipment
+        </h3>
+        <form method="POST" style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <input type="text" name="name" placeholder="Product Name (e.g., Brass Wall Light)" required 
+                   style="flex: 2; min-width: 250px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            
+            <input type="number" name="cost_price" placeholder="Buying Price (Cost)" step="0.01" required 
+                   style="flex: 1; min-width: 150px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            
+            <input type="number" name="price" placeholder="Selling Price (MRP)" step="0.01" required 
+                   style="flex: 1; min-width: 150px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            
+            <input type="number" name="stock" placeholder="Stock Qty" required 
+                   style="flex: 0.5; min-width: 100px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            
+            <button type="submit" style="background: #2563EB; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s;" onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='#2563EB'">
+                Add Product
+            </button>
+        </form>
+    </div>
+
+    <div style="background: white; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0;">
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Product Details</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Buying Cost</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Selling Price</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Profit Margin</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Stock</th>
+                    <th style="padding: 16px; color: #64748B; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr style="border-bottom: 1px solid #F1F5F9; transition: 0.2s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 16px;">
+                        <span style="display: block; font-weight: 600; color: #1E293B;">{{ p[1] }}</span>
+                        <small style="color: #94A3B8;">ID: #{{ p[0] }}</small>
+                    </td>
+                    <td style="padding: 16px; color: #64748B;">₹ {{ "{:,.2f}".format(p[3] if p[3] else 0) }}</td>
+                    <td style="padding: 16px; color: #1E293B; font-weight: 600;">₹ {{ "{:,.2f}".format(p[2]) }}</td>
+                    <td style="padding: 16px;">
+                        {% set margin = p[2] - (p[3] if p[3] else 0) %}
+                        <span style="color: #10B981; font-weight: 700;">+₹ {{ "{:,.2f}".format(margin) }}</span>
+                    </td>
+                    <td style="padding: 16px;">
+                        {% if p[4] < 5 %}
+                        <span style="background: #FEE2E2; color: #B91C1C; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">
+                            {{ p[4] }} LOW STOCK
+                        </span>
+                        {% else %}
+                        <span style="background: #DCFCE7; color: #15803D; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">
+                            {{ p[4] }} In Stock
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 16px; text-align: right;">
+                        <a href="/delete/products/{{ p[0] }}" style="color: #94A3B8; text-decoration: none; padding: 8px; transition: 0.2s;" 
+                           onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='#94A3B8'" 
+                           onclick="return confirm('Delete this product? This will affect profit calculations.')">
+                            <i class="far fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
